@@ -2,27 +2,27 @@
   "name": "ichigojam-react",
   "version": "0.1.0",
   "description": "IchigoJam BASIC as a React component, running in WebAssembly.",
-  "type": "module",
+  "keywords": [
+    "basic",
+    "emulator",
+    "ichigojam",
+    "react",
+    "retro",
+    "wasm",
+    "webassembly"
+  ],
+  "homepage": "https://github.com/Shiyo1101/ichigojam-react#readme",
   "license": "MIT",
   "author": "Yoshiki Uchida",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Shiyo1101/ichigojam-react.git"
   },
-  "homepage": "https://github.com/Shiyo1101/ichigojam-react#readme",
-  "keywords": [
-    "ichigojam",
-    "basic",
-    "wasm",
-    "webassembly",
-    "react",
-    "retro",
-    "emulator"
-  ],
-  "sideEffects": false,
   "files": [
     "dist"
   ],
+  "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -38,21 +38,26 @@
     "sync-wasm": "node scripts/sync-wasm.mjs",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "prepublishOnly": "pnpm run build"
-  },
-  "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^6.0.3",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.4.5",
     "vite": "^8.1.0",
     "vite-plugin-dts": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "packageManager": "pnpm@10.30.3"
 }
