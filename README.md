@@ -87,11 +87,7 @@ wasm の instantiate はページで一度きり、各 `<IchigoJam />` はラン
 
 ```tsx
 import { useRef } from "react";
-import {
-  IchigoJam,
-  IchigoJamButton,
-  type IchigoJamHandle,
-} from "ichigojam-react";
+import { IchigoJam, IchigoJamButton, type IchigoJamHandle } from "ichigojam-react";
 
 function Grid({ items }: { items: { id: string }[] }) {
   const handles = useRef(new Map<string, IchigoJamHandle>());
@@ -100,11 +96,7 @@ function Grid({ items }: { items: { id: string }[] }) {
       {items.map((it) => (
         <IchigoJam key={it.id} onReady={(h) => handles.current.set(it.id, h)} />
       ))}
-      <button
-        onClick={() =>
-          handles.current.get("enemy-3")?.keyDown(IchigoJamButton.Left)
-        }
-      >
+      <button onClick={() => handles.current.get("enemy-3")?.keyDown(IchigoJamButton.Left)}>
         move
       </button>
     </>
@@ -133,4 +125,8 @@ pnpm build
 
 ## ライセンス
 
-MIT © Yoshiki Uchida. IchigoJam BASIC ファームウェア (MIT, the IchigoJam authors) の Rust 移植を WebAssembly 化したもの。
+MIT © Shiyo1101. IchigoJam BASIC ファームウェア (MIT, the IchigoJam authors) の Rust 移植 ([ichigojam-rs](https://github.com/Shiyo1101/ichigojam-firm)) を WebAssembly 化したもの。`ichigojam-react` 自体 (React/TypeScript コード) は Shiyo1101 によるオリジナル実装。
+
+## 商標
+
+- IchigoJamは、株式会社jig.jpの登録商標です (IchigoJam is a registered trademark of jig.jp co., ltd.)
