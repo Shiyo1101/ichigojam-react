@@ -66,10 +66,10 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "oxlint",
-      "oxfmt"
+      "oxlint --no-error-on-unmatched-pattern",
+      "oxfmt --no-error-on-unmatched-pattern"
     ],
-    "*.{json,md,html}": "oxfmt"
+    "*.{json,md,html}": "oxfmt --no-error-on-unmatched-pattern"
   },
   "packageManager": "pnpm@11.9.0"
 }
