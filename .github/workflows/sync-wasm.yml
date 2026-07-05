@@ -1,0 +1,86 @@
+name: Sync wasm from ichigojam-rs
+
+# Shiyo1101/ichigojam-rs の web/core 更新を受けて (repository_dispatch) 、
+# 最新の ichigojam-rs をチェックアウトし直して wasm を再ビルド、
+# scripts/sync-wasm.mjs で src/wasm/ を同期し、差分があれば PR を自動作成する。
+
+on:
+  repository_dispatch:
+    types: [sync-wasm]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ichigojam-react
+        uses: actions/checkout@v4
+
+      - name: Checkout ichigojam-rs
+        uses: actions/checkout@v4
+        with:
+          repository: Shiyo1101/ichigojam-rs
+          token: ${{ secrets.ICHIGOJAM_RS_READ_TOKEN }}
+          ref: ${{ github.event.client_payload.sha || 'main' }}
+          path: rust-src/ichigojam-rs
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Resolve wasm-bindgen-cli version
+        id: wbg
+        run: |
+          VERSION=$(grep -A2 'name = "wasm-bindgen"' rust-src/ichigojam-rs/Cargo.lock | grep version | head -1 | cut -d '"' -f2)
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache wasm-bindgen-cli
+        id: cache-wbg
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-bindgen
+          key: wasm-bindgen-cli-${{ steps.wbg.outputs.version }}
+
+      - name: Install wasm-bindgen-cli
+        if: steps.cache-wbg.outputs.cache-hit != 'true'
+        run: cargo install wasm-bindgen-cli --version ${{ steps.wbg.outputs.version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync wasm
+        env:
+          IJ_RUST_DIR: ${{ github.workspace }}/rust-src
+        run: pnpm run sync-wasm
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build (sanity check)
+        run: pnpm run build
+
+      - name: Open PR if changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync wasm from ichigojam-rs@${{ github.event.client_payload.sha }}"
+          branch: auto/sync-wasm
+          delete-branch: true
+          title: "chore: sync wasm from ichigojam-rs"
+          body: |
+            ichigojam-rs の web/core 更新に伴う wasm 自動同期 PR です。
+
+            Source: Shiyo1101/ichigojam-rs@${{ github.event.client_payload.sha }}
