@@ -35,7 +35,6 @@
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
-    "sync-wasm": "node scripts/sync-wasm.mjs",
     "build": "vite build",
     "typecheck": "tsgo --noEmit",
     "typecheck:tsc": "tsc --noEmit",

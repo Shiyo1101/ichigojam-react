@@ -1,8 +1,8 @@
 name: Sync wasm from ichigojam-rs
 
 # Shiyo1101/ichigojam-rs の web/core 更新を受けて (repository_dispatch) 、
-# 最新の ichigojam-rs をチェックアウトし直して wasm を再ビルド、
-# scripts/sync-wasm.mjs で src/wasm/ を同期し、差分があれば PR を自動作成する。
+# 最新の ichigojam-rs をチェックアウトし直して wasm を再ビルドし、
+# src/wasm/ を同期して差分があれば PR を自動作成する。
 
 on:
   repository_dispatch:
@@ -26,7 +26,7 @@ jobs:
           repository: Shiyo1101/ichigojam-rs
           token: ${{ secrets.ICHIGOJAM_RS_READ_TOKEN }}
           ref: ${{ github.event.client_payload.sha || 'main' }}
-          path: rust-src/ichigojam-rs
+          path: ichigojam-rs-src
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -36,7 +36,7 @@ jobs:
       - name: Resolve wasm-bindgen-cli version
         id: wbg
         run: |
-          VERSION=$(grep -A2 'name = "wasm-bindgen"' rust-src/ichigojam-rs/Cargo.lock | grep version | head -1 | cut -d '"' -f2)
+          VERSION=$(grep -A2 'name = "wasm-bindgen"' ichigojam-rs-src/Cargo.lock | grep version | head -1 | cut -d '"' -f2)
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Cache wasm-bindgen-cli
@@ -50,6 +50,29 @@ jobs:
         if: steps.cache-wbg.outputs.cache-hit != 'true'
         run: cargo install wasm-bindgen-cli --version ${{ steps.wbg.outputs.version }}
 
+      - name: Build wasm
+        working-directory: ichigojam-rs-src
+        run: cargo build --release --target wasm32-unknown-unknown -p ichigojam-web
+
+      - name: Run wasm-bindgen
+        run: |
+          mkdir -p /tmp/wbg-out
+          wasm-bindgen \
+            ichigojam-rs-src/target/wasm32-unknown-unknown/release/ichigojam_web.wasm \
+            --target web --out-dir /tmp/wbg-out
+
+      - name: Sync src/wasm
+        run: |
+          mkdir -p src/wasm
+          cp /tmp/wbg-out/ichigojam_web.js src/wasm/ichigojam_web.js
+          cp /tmp/wbg-out/ichigojam_web.d.ts src/wasm/ichigojam_web.d.ts
+
+          {
+            echo "// 自動生成 (.github/workflows/sync-wasm.yml)。手で編集しない。"
+            echo "// ichigojam_web_bg.wasm を base64 インラインし、fetch なしで init へ渡す。"
+            printf 'export const wasmBase64 =\n  "%s";\n' "$(base64 -w0 /tmp/wbg-out/ichigojam_web_bg.wasm)"
+          } > src/wasm/wasmBinary.ts
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -62,11 +85,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Sync wasm
-        env:
-          IJ_RUST_DIR: ${{ github.workspace }}/rust-src
-        run: pnpm run sync-wasm
-
       - name: Typecheck
         run: pnpm run typecheck
 
@@ -76,6 +94,7 @@ jobs:
       - name: Open PR if changed
         uses: peter-evans/create-pull-request@v6
         with:
+          add-paths: src/wasm
           commit-message: "chore: sync wasm from ichigojam-rs@${{ github.event.client_payload.sha }}"
           branch: auto/sync-wasm
           delete-branch: true

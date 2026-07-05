@@ -125,12 +125,7 @@ pnpm typecheck      # tsc --noEmit
 
 ## wasm の更新
 
-同梱の wasm (`src/wasm/`) は Rust 側 (`ichigojam-rs`) のビルド成果物。更新するには Rust リポジトリを指定して同期スクリプトを実行する (要 `wasm32-unknown-unknown` ターゲットと `wasm-bindgen-cli`):
-
-```bash
-IJ_RUST_DIR=/path/to/ichigojam-firm pnpm sync-wasm
-pnpm build
-```
+同梱の wasm (`src/wasm/`) は Rust 側 ([ichigojam-rs](https://github.com/Shiyo1101/ichigojam-rs)) のビルド成果物。`ichigojam-rs` の `web/` または `core/` が更新されると、`.github/workflows/sync-wasm.yml` が自動的に wasm を再ビルドして `src/wasm/` を同期し、差分があれば PR (`auto/sync-wasm` ブランチ) を作成する。手動で同期する必要はない。
 
 ## ライセンス
 
