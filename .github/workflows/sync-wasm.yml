@@ -79,7 +79,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # packageManager (pnpm@11.9.0) が Node >= 22.13 を要求するため、
+          # Node 20 だと pnpm 呼び出し (cache: pnpm のキャッシュパス解決) が
+          # ERR_UNKNOWN_BUILTIN_MODULE (node:sqlite 不在) で落ちる。
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
