@@ -1,9 +1,9 @@
-import init, { IchigoJamRunner } from "./wasm/ichigojam_web";
+import init, { IchigoCrateRunner } from "./wasm/ichigocrate_web";
 import { wasmBase64 } from "./wasm/wasmBinary";
 
 /**
  * wasm モジュールの初期化はページ (モジュールスコープ) につき一度だけ行う。
- * 複数の IchigoJam コンポーネントを貼っても instantiate は 1 回で、各コンポーネントは
+ * 複数の IchigoCrate コンポーネントを貼っても instantiate は 1 回で、各コンポーネントは
  * ランナーだけを生成する。wasm-bindgen の "web" target は生成物がモジュール
  * スコープの単一インスタンスを共有するため、2 個目以降の異なる wasmUrl を
  * 実際に読み込み直すことはできない (既存インスタンスのポインタが無効になる)。
@@ -22,15 +22,15 @@ function decodeBase64(b64: string): Uint8Array {
 }
 
 /**
- * wasm を初期化し IchigoJamRunner クラスを返す。wasmUrl 指定時はそこから
+ * wasm を初期化し IchigoCrateRunner クラスを返す。wasmUrl 指定時はそこから
  * fetch し、未指定なら同梱の base64 インライン版を instantiate する。
  * 初期化に失敗した場合は状態をリセットするので、次の呼び出し (再マウント等) で
  * リトライできる。
  */
-export async function loadIchigoJam(wasmUrl?: string): Promise<typeof IchigoJamRunner> {
+export async function loadIchigoCrate(wasmUrl?: string): Promise<typeof IchigoCrateRunner> {
   if (initPromise && loadedWasmUrl !== wasmUrl) {
     console.warn(
-      `[ichigojam-react] wasm はページにつき 1 回だけ初期化されます。既に "${loadedWasmUrl ?? "(bundled)"}" でロード済みのため "${wasmUrl ?? "(bundled)"}" は無視されます。`,
+      `[ichigocrate-react] wasm はページにつき 1 回だけ初期化されます。既に "${loadedWasmUrl ?? "(bundled)"}" でロード済みのため "${wasmUrl ?? "(bundled)"}" は無視されます。`,
     );
   }
   if (!initPromise) {
@@ -45,5 +45,5 @@ export async function loadIchigoJam(wasmUrl?: string): Promise<typeof IchigoJamR
       });
   }
   await initPromise;
-  return IchigoJamRunner;
+  return IchigoCrateRunner;
 }

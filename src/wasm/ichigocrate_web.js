@@ -1,24 +1,24 @@
-/* @ts-self-types="./ichigojam_web.d.ts" */
+/* @ts-self-types="./ichigocrate_web.d.ts" */
 
 /**
- * IchigoJam VM を 1 つ抱えるランナー。JS から `new IchigoJamRunner(canvas)` で生成。
+ * IchigoJam VM を 1 つ抱えるランナー。JS から `new IchigoCrateRunner(canvas)` で生成。
  */
-export class IchigoJamRunner {
+export class IchigoCrateRunner {
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-        IchigoJamRunnerFinalization.unregister(this);
+        IchigoCrateRunnerFinalization.unregister(this);
         return ptr;
     }
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_ichigojamrunner_free(ptr, 0);
+        wasm.__wbg_ichigocraterunner_free(ptr, 0);
     }
     /**
      * 実行中プログラムを中断する (ESC 相当)。暴走停止に使う。
      */
     break() {
-        wasm.ichigojamrunner_break(this.__wbg_ptr);
+        wasm.ichigocraterunner_break(this.__wbg_ptr);
     }
     /**
      * REPL の 1 行を直接実行する (画面エディタを介さない最もクリーンな経路)。
@@ -28,7 +28,7 @@ export class IchigoJamRunner {
     exec(line) {
         const ptr0 = passStringToWasm0(line, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.ichigojamrunner_exec(this.__wbg_ptr, ptr0, len0);
+        wasm.ichigocraterunner_exec(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * 画面 (VRAM) を文字列スナップショットとして取得する。各行の末尾空白は
@@ -39,7 +39,7 @@ export class IchigoJamRunner {
         let deferred1_0;
         let deferred1_1;
         try {
-            const ret = wasm.ichigojamrunner_getScreenText(this.__wbg_ptr);
+            const ret = wasm.ichigocraterunner_getScreenText(this.__wbg_ptr);
             deferred1_0 = ret[0];
             deferred1_1 = ret[1];
             return getStringFromWasm0(ret[0], ret[1]);
@@ -55,7 +55,7 @@ export class IchigoJamRunner {
     getVar(name) {
         const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.ichigojamrunner_getVar(this.__wbg_ptr, ptr0, len0);
+        const ret = wasm.ichigocraterunner_getVar(this.__wbg_ptr, ptr0, len0);
         return ret;
     }
     /**
@@ -63,7 +63,7 @@ export class IchigoJamRunner {
      * @returns {boolean}
      */
     is_kana() {
-        const ret = wasm.ichigojamrunner_is_kana(this.__wbg_ptr);
+        const ret = wasm.ichigocraterunner_is_kana(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
@@ -72,7 +72,7 @@ export class IchigoJamRunner {
      * @returns {boolean}
      */
     is_led() {
-        const ret = wasm.ichigojamrunner_is_led(this.__wbg_ptr);
+        const ret = wasm.ichigocraterunner_is_led(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
@@ -81,14 +81,14 @@ export class IchigoJamRunner {
      * @param {number} code
      */
     keyDown(code) {
-        wasm.ichigojamrunner_keyDown(this.__wbg_ptr, code);
+        wasm.ichigocraterunner_keyDown(this.__wbg_ptr, code);
     }
     /**
      * INKEY()/BTN() 用の物理キー解放。
      * @param {number} code
      */
     keyUp(code) {
-        wasm.ichigojamrunner_keyUp(this.__wbg_ptr, code);
+        wasm.ichigocraterunner_keyUp(this.__wbg_ptr, code);
     }
     /**
      * 複数行をまとめて投入する (行番号付きは LIST 領域へ格納される)。
@@ -97,7 +97,7 @@ export class IchigoJamRunner {
     loadProgram(text) {
         const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.ichigojamrunner_loadProgram(this.__wbg_ptr, ptr0, len0);
+        wasm.ichigocraterunner_loadProgram(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * `canvas` を描画先に紐付けてランナーを生成する。canvas の解像度は論理
@@ -113,12 +113,12 @@ export class IchigoJamRunner {
     constructor(canvas, storage_prefix, persist) {
         var ptr0 = isLikeNone(storage_prefix) ? 0 : passStringToWasm0(storage_prefix, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
-        const ret = wasm.ichigojamrunner_new(canvas, ptr0, len0, isLikeNone(persist) ? 0xFFFFFF : persist ? 1 : 0);
+        const ret = wasm.ichigocraterunner_new(canvas, ptr0, len0, isLikeNone(persist) ? 0xFFFFFF : persist ? 1 : 0);
         if (ret[2]) {
             throw takeFromExternrefTable0(ret[1]);
         }
         this.__wbg_ptr = ret[0];
-        IchigoJamRunnerFinalization.register(this, this.__wbg_ptr, this);
+        IchigoCrateRunnerFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
     /**
@@ -132,7 +132,7 @@ export class IchigoJamRunner {
      * @param {Function | null} [cb]
      */
     onError(cb) {
-        wasm.ichigojamrunner_onError(this.__wbg_ptr, isLikeNone(cb) ? 0 : addToExternrefTable0(cb));
+        wasm.ichigocraterunner_onError(this.__wbg_ptr, isLikeNone(cb) ? 0 : addToExternrefTable0(cb));
     }
     /**
      * 画面出力ストリーミングのコールバックを登録する。`cb(chunk: string)` が
@@ -145,7 +145,7 @@ export class IchigoJamRunner {
      * @param {Function | null} [cb]
      */
     onPrint(cb) {
-        wasm.ichigojamrunner_onPrint(this.__wbg_ptr, isLikeNone(cb) ? 0 : addToExternrefTable0(cb));
+        wasm.ichigocraterunner_onPrint(this.__wbg_ptr, isLikeNone(cb) ? 0 : addToExternrefTable0(cb));
     }
     /**
      * キーイベントを 1 件処理する。`code` は `KeyboardEvent.code` (物理キー位置)、
@@ -161,7 +161,7 @@ export class IchigoJamRunner {
     on_key(code, shift, alt, pressed) {
         const ptr0 = passStringToWasm0(code, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.ichigojamrunner_on_key(this.__wbg_ptr, ptr0, len0, shift, alt, pressed);
+        wasm.ichigocraterunner_on_key(this.__wbg_ptr, ptr0, len0, shift, alt, pressed);
     }
     /**
      * メモリ (PEEK 相当) を読む。
@@ -169,7 +169,7 @@ export class IchigoJamRunner {
      * @returns {number}
      */
     peek(addr) {
-        const ret = wasm.ichigojamrunner_peek(this.__wbg_ptr, addr);
+        const ret = wasm.ichigocraterunner_peek(this.__wbg_ptr, addr);
         return ret;
     }
     /**
@@ -178,20 +178,20 @@ export class IchigoJamRunner {
      * カナ入力・VIDEO 設定なども含めて丸ごと起動直後の状態へ戻る。
      */
     reset() {
-        wasm.ichigojamrunner_reset(this.__wbg_ptr);
+        wasm.ichigocraterunner_reset(this.__wbg_ptr);
     }
     /**
      * `RUN` 相当。格納済みプログラムの実行を開始する。
      */
     run() {
-        wasm.ichigojamrunner_run(this.__wbg_ptr);
+        wasm.ichigocraterunner_run(this.__wbg_ptr);
     }
     /**
      * 1 フレーム進めて再描画する。`now_ms` は `performance.now()` を渡す。
      * @param {number} now_ms
      */
     tick(now_ms) {
-        wasm.ichigojamrunner_tick(this.__wbg_ptr, now_ms);
+        wasm.ichigocraterunner_tick(this.__wbg_ptr, now_ms);
     }
     /**
      * 文字列をタイプ入力する (キーボード入力と同等)。実行中は INKEY()/INPUT へ、
@@ -202,10 +202,10 @@ export class IchigoJamRunner {
     type(text) {
         const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.ichigojamrunner_type(this.__wbg_ptr, ptr0, len0);
+        wasm.ichigocraterunner_type(this.__wbg_ptr, ptr0, len0);
     }
 }
-if (Symbol.dispose) IchigoJamRunner.prototype[Symbol.dispose] = IchigoJamRunner.prototype.free;
+if (Symbol.dispose) IchigoCrateRunner.prototype[Symbol.dispose] = IchigoCrateRunner.prototype.free;
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
@@ -339,13 +339,13 @@ function __wbg_get_imports() {
     };
     return {
         __proto__: null,
-        "./ichigojam_web_bg.js": import0,
+        "./ichigocrate_web_bg.js": import0,
     };
 }
 
-const IchigoJamRunnerFinalization = (typeof FinalizationRegistry === 'undefined')
+const IchigoCrateRunnerFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_ichigojamrunner_free(ptr, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_ichigocraterunner_free(ptr, 1));
 
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
@@ -551,7 +551,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (module_or_path === undefined) {
-        module_or_path = new URL('ichigojam_web_bg.wasm', import.meta.url);
+        module_or_path = new URL('ichigocrate_web_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 

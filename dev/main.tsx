@@ -1,25 +1,25 @@
 import { StrictMode, useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { IchigoJam, IchigoJamButton, useIchigoJam, type IchigoJamError } from "../src";
+import { IchigoCrate, IchigoCrateButton, useIchigoCrate, type IchigoCrateError } from "../src";
 
 const errorTextStyle = { color: "#f77" };
 
 // src を直接 import する開発用 playground。pnpm dev で HMR が効く。
 function App() {
-  const { ref, ij } = useIchigoJam();
+  const { ref, ij } = useIchigoCrate();
   const [log, setLog] = useState("");
-  const [err, setErr] = useState<IchigoJamError | null>(null);
+  const [err, setErr] = useState<IchigoCrateError | null>(null);
 
   const onPrint = useCallback((c: string) => setLog((s) => s + c), []);
   const execHello = useCallback(() => ij.exec("PRINT 1+2"), [ij]);
   const execError = useCallback(() => ij.exec("?1/0"), [ij]);
-  const pressLeft = useCallback(() => ij.keyDown(IchigoJamButton.Left), [ij]);
+  const pressLeft = useCallback(() => ij.keyDown(IchigoCrateButton.Left), [ij]);
   const resetRunner = useCallback(() => ij.reset(), [ij]);
 
   return (
     <div className="row">
       <div>
-        <IchigoJam
+        <IchigoCrate
           ref={ref}
           defaultProgram={'10 PRINT "HELLO"\n20 PRINT 6*7\n30 END'}
           autoRun
@@ -49,7 +49,7 @@ function App() {
         )}
       </div>
       {/* 別 storagePrefix で共存する 2 つ目のインスタンス。 */}
-      <IchigoJam storagePrefix="dev-b" />
+      <IchigoCrate storagePrefix="dev-b" />
     </div>
   );
 }

@@ -1,14 +1,14 @@
-import type { IchigoJamRunner } from "./wasm/ichigojam_web";
-import type { IchigoJamHandle } from "./types";
+import type { IchigoCrateRunner } from "./wasm/ichigocrate_web";
+import type { IchigoCrateHandle } from "./types";
 
 /**
- * IchigoJamHandle 形の委譲先を返すゲッタから、実際に呼び出し可能な
- * IchigoJamHandle を組み立てる。ゲッタが null を返す間は既定値 (no-op /
- * 0 / false 等) にフォールバックする。createHandle と useIchigoJam の
+ * IchigoCrateHandle 形の委譲先を返すゲッタから、実際に呼び出し可能な
+ * IchigoCrateHandle を組み立てる。ゲッタが null を返す間は既定値 (no-op /
+ * 0 / false 等) にフォールバックする。createHandle と useIchigoCrate の
  * フォワーディングハンドルはどちらもこの一箇所だけに依存するので、
- * IchigoJamHandle の仕様が変わっても更新箇所は 1 つで済む。
+ * IchigoCrateHandle の仕様が変わっても更新箇所は 1 つで済む。
  */
-export function delegateHandle(getSource: () => IchigoJamHandle | null): IchigoJamHandle {
+export function delegateHandle(getSource: () => IchigoCrateHandle | null): IchigoCrateHandle {
   return {
     type: (t) => getSource()?.type(t),
     exec: (l) => getSource()?.exec(l),
@@ -27,13 +27,13 @@ export function delegateHandle(getSource: () => IchigoJamHandle | null): IchigoJ
 }
 
 /**
- * 動作中の wasm ランナーへ委譲する IchigoJamHandle を作る。getRunner は
+ * 動作中の wasm ランナーへ委譲する IchigoCrateHandle を作る。getRunner は
  * 呼び出しごとに最新ランナー (未生成なら null) を返すゲッタ。返すハンドルは
  * 毎回 getter 越しにランナーを引くので、ランナーを作り直しても同じハンドルを
  * 使い続けられる。snake_case の wasm 名 (is_led/is_kana) を camelCase へ正規化する
  * 唯一の場所であり、useImperativeHandle と onReady が共有する。
  */
-export function createHandle(getRunner: () => IchigoJamRunner | null): IchigoJamHandle {
+export function createHandle(getRunner: () => IchigoCrateRunner | null): IchigoCrateHandle {
   return delegateHandle(() => {
     const runner = getRunner();
     if (!runner) return null;
