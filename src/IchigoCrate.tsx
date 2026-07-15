@@ -1,8 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import type { IchigoJamRunner } from "./wasm/ichigojam_web";
-import type { IchigoJamError, IchigoJamHandle, IchigoJamProps } from "./types";
+import type { IchigoCrateRunner } from "./wasm/ichigocrate_web";
+import type { IchigoCrateError, IchigoCrateHandle, IchigoCrateProps } from "./types";
 import { createHandle } from "./handle";
-import { loadIchigoJam } from "./wasmLoader";
+import { loadIchigoCrate } from "./wasmLoader";
 
 // 論理画面サイズ (wasm 側の IMG_W/IMG_H と一致)。
 const SCREEN_W = 256;
@@ -34,13 +34,13 @@ const PREVENT_KEYS = new Set([
 /**
  * IchigoJam BASIC を 1 枚の canvas として描画する React コンポーネント。
  *
- * wasm の instantiate はページで一度だけ行われる (loadIchigoJam)。各インスタンスは
+ * wasm の instantiate はページで一度だけ行われる (loadIchigoCrate)。各インスタンスは
  * ランナーのみ生成するので 1 ページに複数貼れる。ref から命令ハンドル
- * (IchigoJamHandle) で外部制御できる。アンマウント時には rAF 停止・リスナ解除・
+ * (IchigoCrateHandle) で外部制御できる。アンマウント時には rAF 停止・リスナ解除・
  * ランナー解放を行い、React StrictMode の二重マウントでもランナーが二重起動
  * しないようガードする。
  */
-export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function IchigoJam(
+export const IchigoCrate = forwardRef<IchigoCrateHandle, IchigoCrateProps>(function IchigoCrate(
   {
     defaultProgram,
     autoRun,
@@ -57,7 +57,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
   ref,
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const runnerRef = useRef<IchigoJamRunner | null>(null);
+  const runnerRef = useRef<IchigoCrateRunner | null>(null);
   // 最新の onPrint/onError/onReady を ref で保持し、ランナーを作り直さず差し替えられるようにする。
   const onPrintRef = useRef(onPrint);
   onPrintRef.current = onPrint;
@@ -67,7 +67,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
   onReadyRef.current = onReady;
 
   // ランナーへ委譲する安定ハンドル。useImperativeHandle と onReady で共有する。
-  const handleRef = useRef<IchigoJamHandle | null>(null);
+  const handleRef = useRef<IchigoCrateHandle | null>(null);
   if (!handleRef.current) {
     handleRef.current = createHandle(() => runnerRef.current);
   }
@@ -75,7 +75,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
   // 依存 (storagePrefix 等) 変化でランナーが作り直されても再適用しないためのガード。
   const appliedInitialRef = useRef(false);
 
-  useImperativeHandle(ref, () => handleRef.current as IchigoJamHandle, []);
+  useImperativeHandle(ref, () => handleRef.current as IchigoCrateHandle, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -83,7 +83,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
 
     let cancelled = false;
     let raf = 0;
-    let runner: IchigoJamRunner | null = null;
+    let runner: IchigoCrateRunner | null = null;
 
     const onKeyDown = (e: KeyboardEvent) => {
       // Ctrl/Cmd 併用 (コピー等) は OS/ブラウザに委ねる。
@@ -95,14 +95,14 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
       runner?.on_key(e.code, e.shiftKey, e.altKey, false);
     };
 
-    loadIchigoJam(wasmUrl)
+    loadIchigoCrate(wasmUrl)
       .then((Runner) => {
         if (cancelled) return;
 
         runner = new Runner(canvas, storagePrefix, persist);
         runnerRef.current = runner;
         runner.onPrint((chunk: string) => onPrintRef.current?.(chunk));
-        runner.onError((error: IchigoJamError) => onErrorRef.current?.(error));
+        runner.onError((error: IchigoCrateError) => onErrorRef.current?.(error));
 
         if (!appliedInitialRef.current) {
           appliedInitialRef.current = true;
@@ -111,7 +111,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
         }
 
         // ランナー生成・初期プログラム適用が済み、外部制御が可能になった通知。
-        onReadyRef.current?.(handleRef.current as IchigoJamHandle);
+        onReadyRef.current?.(handleRef.current as IchigoCrateHandle);
 
         canvas.addEventListener("keydown", onKeyDown);
         canvas.addEventListener("keyup", onKeyUp);
@@ -133,7 +133,7 @@ export const IchigoJam = forwardRef<IchigoJamHandle, IchigoJamProps>(function Ic
       })
       .catch((error) => {
         if (cancelled) return;
-        console.error("[IchigoJam] failed to load wasm module", error);
+        console.error("[IchigoCrate] failed to load wasm module", error);
       });
 
     return () => {

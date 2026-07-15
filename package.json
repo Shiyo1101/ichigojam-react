@@ -1,22 +1,22 @@
 {
-  "name": "ichigojam-react",
+  "name": "ichigocrate-react",
   "version": "0.1.0",
   "description": "IchigoJam BASIC as a React component, running in WebAssembly.",
   "keywords": [
     "basic",
     "emulator",
-    "ichigojam",
+    "ichigocrate",
     "react",
     "retro",
     "wasm",
     "webassembly"
   ],
-  "homepage": "https://github.com/Shiyo1101/ichigojam-react#readme",
+  "homepage": "https://github.com/Shiyo1101/ichigocrate-react#readme",
   "license": "MIT",
   "author": "Shiyo1101",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shiyo1101/ichigojam-react.git"
+    "url": "git+https://github.com/Shiyo1101/ichigocrate-react.git"
   },
   "files": [
     "dist"

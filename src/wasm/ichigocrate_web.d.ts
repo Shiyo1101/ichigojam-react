@@ -2,9 +2,9 @@
 /* eslint-disable */
 
 /**
- * IchigoJam VM を 1 つ抱えるランナー。JS から `new IchigoJamRunner(canvas)` で生成。
+ * IchigoJam VM を 1 つ抱えるランナー。JS から `new IchigoCrateRunner(canvas)` で生成。
  */
-export class IchigoJamRunner {
+export class IchigoCrateRunner {
     free(): void;
     [Symbol.dispose](): void;
     /**
@@ -114,25 +114,25 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly __wbg_ichigojamrunner_free: (a: number, b: number) => void;
-    readonly ichigojamrunner_break: (a: number) => void;
-    readonly ichigojamrunner_exec: (a: number, b: number, c: number) => void;
-    readonly ichigojamrunner_getScreenText: (a: number) => [number, number];
-    readonly ichigojamrunner_getVar: (a: number, b: number, c: number) => number;
-    readonly ichigojamrunner_is_kana: (a: number) => number;
-    readonly ichigojamrunner_is_led: (a: number) => number;
-    readonly ichigojamrunner_keyDown: (a: number, b: number) => void;
-    readonly ichigojamrunner_keyUp: (a: number, b: number) => void;
-    readonly ichigojamrunner_loadProgram: (a: number, b: number, c: number) => void;
-    readonly ichigojamrunner_new: (a: any, b: number, c: number, d: number) => [number, number, number];
-    readonly ichigojamrunner_onError: (a: number, b: number) => void;
-    readonly ichigojamrunner_onPrint: (a: number, b: number) => void;
-    readonly ichigojamrunner_on_key: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-    readonly ichigojamrunner_peek: (a: number, b: number) => number;
-    readonly ichigojamrunner_reset: (a: number) => void;
-    readonly ichigojamrunner_run: (a: number) => void;
-    readonly ichigojamrunner_tick: (a: number, b: number) => void;
-    readonly ichigojamrunner_type: (a: number, b: number, c: number) => void;
+    readonly __wbg_ichigocraterunner_free: (a: number, b: number) => void;
+    readonly ichigocraterunner_break: (a: number) => void;
+    readonly ichigocraterunner_exec: (a: number, b: number, c: number) => void;
+    readonly ichigocraterunner_getScreenText: (a: number) => [number, number];
+    readonly ichigocraterunner_getVar: (a: number, b: number, c: number) => number;
+    readonly ichigocraterunner_is_kana: (a: number) => number;
+    readonly ichigocraterunner_is_led: (a: number) => number;
+    readonly ichigocraterunner_keyDown: (a: number, b: number) => void;
+    readonly ichigocraterunner_keyUp: (a: number, b: number) => void;
+    readonly ichigocraterunner_loadProgram: (a: number, b: number, c: number) => void;
+    readonly ichigocraterunner_new: (a: any, b: number, c: number, d: number) => [number, number, number];
+    readonly ichigocraterunner_onError: (a: number, b: number) => void;
+    readonly ichigocraterunner_onPrint: (a: number, b: number) => void;
+    readonly ichigocraterunner_on_key: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+    readonly ichigocraterunner_peek: (a: number, b: number) => number;
+    readonly ichigocraterunner_reset: (a: number) => void;
+    readonly ichigocraterunner_run: (a: number) => void;
+    readonly ichigocraterunner_tick: (a: number, b: number) => void;
+    readonly ichigocraterunner_type: (a: number, b: number, c: number) => void;
     readonly __wbindgen_exn_store: (a: number) => void;
     readonly __externref_table_alloc: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
