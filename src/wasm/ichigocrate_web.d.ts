@@ -89,8 +89,7 @@ export class IchigoCrateRunner {
      */
     peek(addr: number): number;
     /**
-     * 実機の RESET ボタン (電源 ON/OFF による再起動) 相当。BASIC の `RESET`
-     * コマンドと同じ [`Machine::power_on_reset`] へ委譲するので、LED・画面・
+     * 実機の RESET ボタン (電源 ON/OFF による再起動) 相当。LED・画面・
      * カナ入力・VIDEO 設定なども含めて丸ごと起動直後の状態へ戻る。
      */
     reset(): void;
